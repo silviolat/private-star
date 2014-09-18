@@ -1,0 +1,179 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fnil\fcharset0 TrebuchetMS;\f1\froman\fcharset0 Times-Roman;\f2\fswiss\fcharset0 ArialMT;
+}
+{\colortbl;\red255\green255\blue255;\red83\green83\blue83;\red16\green60\blue192;\red26\green26\blue26;
+}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl480\qj
+
+\f0\fs42 \cf0 Model 
+\f1\b\fs48 \
+\pard\pardeftab720
+
+\b0\fs24 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 Let G be the public graph and let G_v be the private graph of node v. Let G_v be a star with center node v. \'a0The algorithms consists in two steps, the 
+\i precomputation
+\i0  and the 
+\i update
+\i0 . Precomputation must use space linear in G and polynomial time. Updates, run for a single node, must use time/space linear in G_v. At the moment any approximation is OK.
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl360\qj
+
+\f0\b\fs32 \cf2 Connected component (CC)
+\f1\fs28 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\b0\fs30 \cf0 The CC can be computed in linear space and time in G. The update is almost linear in deg(v) by simple union-find.
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl360\qj
+
+\f0\b\fs32 \cf2 All-pairs Shortest Path
+\f1\fs28 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\b0\fs30 \cf0 The 
+\i precomputation 
+\i0 step can be done using landmark embedding sketches.
+\f1\fs24 \
+
+\f2\fs30  {\field{\*\fldinst{HYPERLINK "http://rd.springer.com/article/10.1007%2FBF02761110#"}}{\fldrslt \cf3 \ul \ulc3 http://rd.springer.com/article/10.1007%2FBF02761110}} 
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 In this case the space and time for the precomputation is \uc0\u920 (n^(1+1/c)) and it gives a O(2c) approximation w.h.p.. \'a0
+\f1\fs24 \
+
+\f2\fs30 Given the all-pairs shortest paths, the update of the distance from v to w can be done in O(deg(v)) by looking at all paths from the neighbors of v in the star to w in the public graph. dist_\{G_i)\}(v,w) = 1+min(dist_G(x,w))
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl360\qj
+
+\f0\b\fs32 \cf2 Jaccard coefficient
+\f1\fs28 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\b0\fs30 \cf0 Computing the Jaccard similarity between any pair of nodes. Using min-hashing is it possible to sketch Jaccard similarity using O(k n) space. Then the update requires only to update the sketches of node v and this require O(deg(v)) time. However this approach gives poor multiplicative approximation, (for instance if J(x,y) = 1/n linear sketches are necessary to approximate this similarity).
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl360\qj
+
+\f0\b\fs32 \cf2 Minimum spanning tree
+\f1\fs28 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\b0\fs30 \cf0 The MST in G can be stored in linear space. For each new edge in G_v we must check which cycle in forms in the MST and remove the largest weight edge in the cycle. The trivial implementation would require O(deg(v) n). Other algorithms allows better time with additional preprocessing. {\field{\*\fldinst{HYPERLINK "http://www.cs.uu.nl/docs/vakken/al/WerkC/UpdatingSpanningTrees.pdf"}}{\fldrslt \cf3 \ul \ulc3 http://www.cs.uu.nl/docs/vakken/al/WerkC/UpdatingSpanningTrees.pdf}}
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl360\qj
+
+\f0\b\fs32 \cf2 Counting triangles
+\f1\fs28 \cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\b0\fs30 \cf0 We want to count the number of triangles to which each node in graph is participating. Shank\'92s algorithm allows to count it in O(m^1.5) time O(m) space and there are parallel algorithm in MapReduce {\field{\*\fldinst{HYPERLINK "http://theory.stanford.edu/~sergei/papers/www11-triangles.pdf"}}{\fldrslt 
+\fs26 \cf3 \ul \ulc3 http://theory.stanford.edu/~sergei/papers/www11-triangles.pdf}}.
+\f1\fs24 \
+
+\f2\fs30 Suppose we precompute exactly the number of triangles in the public graph (perhaps as the WWW11 paper). Then for the private graph G_v we want to count how many new triangles are added. This can be done in O(deg(v)^2) time looking at each pair of new neighbors of v in G_v. 
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 Consider the 2-hop neighborhood of v, A= \{v \\cup N(v) \\cup N(N(v))\}. The number of edges in this graph is m\'92 = \\sum_x \\in N(v) deg(x). All new triangles are in the induced subgraph G[A]. We can simply count the number of triangle there in O(1) time per edge by simply checking that \'a0for each neighbor x \\in N(v) and each edge (x,y) also y \\in N(v). 
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 In this case applyting Shank\'92s algorithm directly to the subraph would require O(m\'92^1.5) which is better than deg(v)^2 but higher than the simple algorithm mentioned before. 
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 Another way to count all triangle in O(m\'92) time/space is by restricting the execution of Shank\'92s algorithm only to triangles that involves node u. This does not improve the simple algorithm however. The idea is the following. Let L=\{ x \\in N(v) s.t deg(u) < deg(v) \} and let \'a0H=\{ x \\in N(v) s.t. deg(u) >= deg(v) \}. \'a0The idea of shanks algorithm is that it is possible to consider only triplets of nodes (a,b,c) such that deg(a) <= deg(b) <= deg(c) such that b,c \\in N(a) and check that \{b,c\} \\in E. Now the only kind of triplets we need to consider are (a, v, b) where a \\in L b \\in N(a) and triplets (v, b\'92, b\'92\'92) where b\'92, b\'92\'92 are in H. 
+\f1\fs24 \
+
+\f2\fs30 The total cost for first kind of triangles is O(sum_ x \\n L (deg(x)) = O(m\'92). For the second kind the cost is O(H^2). Now by shank\'92s argument we know that there are at most O(sqrt(m\'92)) neighbors of v whose degree is higher than v, so the total cost is again O(m\'92). 
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl340\qj
+
+\f2\fs30 \cf0 It would be interesting to obtain algorithm whose complexity is O(m) where m is the edges in the 
+\i induced 
+\i0 subgraph of the neighbors of v, not all the adjacent edges to node in N(v).
+\f1\fs24 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl380
+
+\f0\b\fs34 \cf0 Previous Notes
+\f1\fs36 \
+\pard\pardeftab720
+
+\b0\fs24 \cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 An interesting paper by Andrew, Kevin and Christos:
+\f1\fs24 \cf0 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+{\field{\*\fldinst{HYPERLINK "http://delivery.acm.org/10.1145/1020000/1014068/p118-faloutsos.pdf?ip=216.239.45.91&id=1014068&acc=ACTIVE%20SERVICE&key=13316E526565D483%2E13316E526565D483%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=340566868&CFTOKEN=32321957&__acm__=1400268205_61f30081052ed08f06f996b621cb7999"}}{\fldrslt 
+\f2\fs26 \cf3 \ul \ulc3 http://delivery.acm.org/10.1145/1020000/1014068/p118-faloutsos.pdf?ip=216.239.45.91&id=1014068&acc=ACTIVE%20SERVICE&key=13316E526565D483%2E13316E526565D483%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=340566868&CFTOKEN=32321957&__acm__=1400268205_61f30081052ed08f06f996b621cb7999}}\
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 Take different definitions of correlation between nodes. Related Kleinberg's paper:
+\f1\fs24 \cf0 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+{\field{\*\fldinst{HYPERLINK "http://www.cs.cornell.edu/home/kleinber/link-pred.pdf"}}{\fldrslt 
+\f2\fs26 \cf3 \ul \ulc3 http://www.cs.cornell.edu/home/kleinber/link-pred.pdf}}\
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 2 questions:
+\f1\fs24 \cf0 \
+
+\f2\fs26 \cf4 - What is the interesting measure (disjoint paths, commute time or Jaccard)? Can we talk about properties?
+\f1\fs24 \cf0 \
+
+\f2\fs26 \cf4 - how to compute them?
+\f1\fs24 \cf0 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 Other question, graph is partially public and partially private. Can we precompute something on the public graph to update quickly the scores?
+\f1\fs24 \cf0 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 Every function that is sketchable can be computed easily(global sketch+local update). There are other class of function that can be easily compute?
+\f1\fs24 \cf0 \
+\pard\pardeftab720
+\cf0 \
+\pard\pardeftab720\sl280
+
+\f2\fs26 \cf4 Maybe we can start with connectivity(maybe through Andrew's result:{\field{\*\fldinst{HYPERLINK "https://people.cs.umass.edu/~mcgregor/papers/12-dynamic.pdf"}}{\fldrslt \cf3 \ul \ulc3 https://people.cs.umass.edu/~mcgregor/papers/12-dynamic.pdf}}).
+\f1\fs24 \cf0 \
+}
